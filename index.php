@@ -1,42 +1,32 @@
+<?php
+session_start();
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
-
 <head>
-
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="">
     <meta name="author" content="">
-
     <title>Cardoso Thomas - Développeur Professionnel</title>
-
-    <!-- Bootstrap Core CSS -->
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Theme CSS -->
     <link href="css/freelancer.min.css" rel="stylesheet">
-
-    <!-- Custom Fonts -->
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
-
 </head>
-
 <body id="page-top" class="index">
-
-    <!-- Navigation -->
     <nav id="mainNav" class="navbar navbar-default navbar-fixed-top navbar-custom">
         <div class="container">
             <div class="navbar-header page-scroll">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Basculer la navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="#page-top">Blog</a>
+                <a class="navbar-brand" href="#page-top">Bonjour, <?php echo htmlspecialchars($username); ?>!</a>
             </div>
-
-            <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
@@ -48,14 +38,19 @@
                     <li class="page-scroll">
                         <a href="#contact">Contact</a>
                     </li>
+                    <?php if ($username !== "Invité"): ?>
+                        <li class="page-scroll">
+                            <a href="user/logout.php">Déconnexion</a>
+                        </li>
+                    <?php else: ?>
+                        <li class="page-scroll">
+                            <a href="user/login.php">Connexion</a>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </div>
-            <!-- /.navbar-collapse -->
         </div>
-        <!-- /.container-fluid -->
     </nav>
-
-    <!-- Header -->
     <header>
         <div class="container">
             <div class="row">
@@ -70,8 +65,6 @@
             </div>
         </div>
     </header>
-
-    <!-- About Section -->
     <section id="about">
         <div class="container">
             <div class="row">
@@ -81,17 +74,12 @@
                 </div>
             </div>
             <div class="row">
-				<div class="col-lg-8 col-lg-offset-2">
-					<p style="text-align: center !important;">Ma passion pour l’informatique et les jeux vidéo m’a permis d’intégrer
-					la Coding Factory. J’apprends à coder en plusieurs langages et à
-					travailler avec la méthode Scrum. J’aime travailler en équipe, je suis
-					curieux et organisé.</p>
-				</div>
+                <div class="col-lg-8 col-lg-offset-2">
+                    <p style="text-align: center !important;">Ma passion pour l’informatique et les jeux vidéo m’a permis d’intégrer la Coding Factory. J’apprends à coder en plusieurs langages et à travailler avec la méthode Scrum. J’aime travailler en équipe, je suis curieux et organisé.</p>
+                </div>
             </div>
         </div>
     </section>
-
-    <!-- Contact Section -->
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -124,7 +112,6 @@
                                 <p class="help-block text-danger"></p>
                             </div>
                         </div>
-                        <br>
                         <div id="success"></div>
                         <div class="row">
                             <div class="form-group col-xs-12">
@@ -136,40 +123,29 @@
             </div>
         </div>
     </section>
-
-	<!-- Footer -->
-	<footer class="text-center">
-		<div class="footer-below">
-			<div class="container">
-				<div class="row">
-					<div class="col-lg-12">
-						<ul class="list-inline">
-							<li>
-								<a href="https://fr.linkedin.com/in/thomas-cardoso" class="btn-social btn-outline" target=”_blank”><i class="fa fa-fw fa-linkedin"></i></a>
-							</li>
-							<li>
-								<a href="https://github.com/tcardo06" class="btn-social btn-outline" target=”_blank”><i class="fa fa-fw fa-github"></i></a>
-							</li>
-							<li>
-								<a href="pdf/THOMAS_CARDOSO_DEVELOPPEUR_WEB.pdf" class="btn-social btn-outline" download><i class="fa fa-fw fa-file-pdf-o"></i></a>
-							</li>
-						</ul>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-
-
-    <!-- jQuery -->
+    <footer class="text-center">
+        <div class="footer-below">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <ul class="list-inline">
+                            <li>
+                                <a href="https://fr.linkedin.com/in/thomas-cardoso" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a>
+                            </li>
+                            <li>
+                                <a href="https://github.com/tcardo06" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-github"></i></a>
+                            </li>
+                            <li>
+                                <a href="pdf/THOMAS_CARDOSO_DEVELOPPEUR_WEB.pdf" class="btn-social btn-outline" download><i class="fa fa-fw fa-file-pdf-o"></i></a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
     <script src="vendor/jquery/jquery.min.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-
-    <!-- Theme JavaScript -->
     <script src="js/freelancer.min.js"></script>
-
 </body>
-
 </html>
