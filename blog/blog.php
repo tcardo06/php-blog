@@ -55,7 +55,7 @@ $result = $stmt->get_result();
       background-color: #4682b4;
       color: #000;
       font-family: 'Lato', sans-serif;
-      padding-top: 70px; /* Adjust this padding to match your navbar height */
+      padding-top: 70px;
     }
   .row {
     display: flex;
@@ -71,6 +71,8 @@ $result = $stmt->get_result();
     flex: 1 0 30%;
     display: flex;
     flex-direction: column;
+    min-height: 350px;
+    position: relative;
     }
   .card:hover {
     transform: scale(1.03);
@@ -90,15 +92,18 @@ $result = $stmt->get_result();
       line-height: 1.6;
       flex-grow: 1;
     }
-  /* .container {
-      padding: 50px 15px;
-    } */
+    .card-body p {
+      flex-grow: 1;
+    }
   .tags {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
       max-width: 90%;
       display: block;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1;
     }
   a {
       color: #3498DB;
@@ -112,6 +117,9 @@ $result = $stmt->get_result();
       text-decoration: none;
     }
   .card a.btn-primary, .card a.btn-primary:hover, .card a.btn-primary:focus {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
       color: #fff;
     }
   .select2-container {
@@ -125,12 +133,12 @@ $result = $stmt->get_result();
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Basculer la navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="../index.php">Bonjour, <?php echo htmlspecialchars($username); ?>!</a>
+                <a class="navbar-brand" href="blog.php">Bonjour, <?php echo htmlspecialchars($username); ?>!</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
-                        <a href="blog.php">À Propos</a>
+                        <a href="../index.php">À Propos</a>
                     </li>
                     <li class="page-scroll">
                         <a href="blog.php">Blog</a>
@@ -180,12 +188,20 @@ $result = $stmt->get_result();
                                 ?>
                             </p>
                             <p class="tags" style="font-size: 1.0em; color: #777;">
-                                <?php echo htmlspecialchars($post['tags']); ?>
+                                <?php
+                                $tags = htmlspecialchars($post['tags']);
+                                if (strlen($tags) > 50) { // Adjust the length limit as needed
+                                    echo substr($tags, 0, 47) . '...';
+                                } else {
+                                    echo $tags;
+                                }
+                                ?>
                             </p>
+
                             <p>
                                 <?php
                                 $contentPreview = htmlspecialchars($post['content']);
-                                if (strlen($contentPreview) > 100) {
+                                if (strlen($contentPreview) > 120) {
                                     echo substr($contentPreview, 0, 90) . '...';
                                 } else {
                                     echo $contentPreview;
@@ -209,7 +225,6 @@ $result = $stmt->get_result();
     <script src="../js/freelancer.min.js"></script>
     <script src="../vendor/clamp/clamp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.full.min.js"></script>
-
     <script>
       window.addEventListener('load', function() {
           var elements = document.querySelectorAll('.card-header');

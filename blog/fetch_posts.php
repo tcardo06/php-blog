@@ -1,7 +1,6 @@
 <?php
 require '../db_connection.php';
 
-// Initialize the base query
 $query = "
     SELECT p.id, p.title, p.content, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
     FROM posts p
@@ -11,11 +10,9 @@ $query = "
     WHERE 1=1
 ";
 
-// Initialize an array to hold the parameters
 $params = [];
 $types = '';
 
-// Check for title parameter
 if (!empty($_GET['title'])) {
     $title = '%' . $_GET['title'] . '%';
     $query .= " AND p.title LIKE ?";
@@ -23,7 +20,6 @@ if (!empty($_GET['title'])) {
     $types .= 's';
 }
 
-// Check for author parameter
 if (!empty($_GET['author'])) {
     $author = $_GET['author'];
     $query .= " AND u.username = ?";
@@ -31,7 +27,6 @@ if (!empty($_GET['author'])) {
     $types .= 's';
 }
 
-// Check for tag parameter
 if (!empty($_GET['tag'])) {
     $tag = $_GET['tag'];
     $query .= " AND t.name = ?";
@@ -41,21 +36,17 @@ if (!empty($_GET['tag'])) {
 
 $query .= " GROUP BY p.id ORDER BY p.created_at DESC";
 
-// Prepare the statement
 $stmt = $conn->prepare($query);
 
-// Check if the statement preparation was successful
 if (!$stmt) {
     echo "Error preparing statement: " . $conn->error;
     exit;
 }
 
-// Bind the parameters dynamically
 if (!empty($params)) {
     $stmt->bind_param($types, ...$params);
 }
 
-// Execute the statement
 if (!$stmt->execute()) {
     echo "Error executing statement: " . $stmt->error;
     exit;

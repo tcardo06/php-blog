@@ -3,9 +3,8 @@ require '../db_connection.php';
 
 header('Content-Type: application/json');
 
-// Get the search term from the AJAX request
 $searchTerm = isset($_GET['q']) ? $_GET['q'] : '';
-$limit = 10; // Set a limit for default results
+$limit = 10;
 
 if ($searchTerm) {
     $query = "SELECT name AS id, name AS text FROM tags WHERE name LIKE ? LIMIT ?";
