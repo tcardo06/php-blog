@@ -30,13 +30,10 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
-                        <a href="#about">À Propos</a>
+                        <a href=index.php>À Propos</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="#blog">Blog</a>
-                    </li>
-                    <li class="page-scroll">
-                        <a href="#contact">Contact</a>
+                        <a href="blog/blog.php">Blog</a>
                     </li>
                     <?php if ($username !== "Invité"): ?>
                         <li class="page-scroll">
