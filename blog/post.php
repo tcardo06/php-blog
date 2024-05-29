@@ -4,6 +4,21 @@ session_start();
 
 $post_id = $_GET['id'];
 
+// Set the username to "Invité" if not logged in
+$username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
+
+// Check if the user is an admin
+$is_admin = false;
+if ($username !== "Invité") {
+    $user_id = $_SESSION['user_id'];
+    $admin_check_stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $admin_check_stmt->bind_param('i', $user_id);
+    $admin_check_stmt->execute();
+    $admin_check_stmt->bind_result($is_admin);
+    $admin_check_stmt->fetch();
+    $admin_check_stmt->close();
+}
+
 // Fetch the post
 $stmt = $conn->prepare("SELECT p.title, p.content, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
                         FROM posts p
@@ -34,12 +49,17 @@ $comments = $comment_stmt->get_result();
     <title><?php echo htmlspecialchars($post['title']); ?></title>
     <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="../css/freelancer.min.css" rel="stylesheet">
+    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <style>
         body {
             background-color: #4682b4;
             color: #000;
             font-family: 'Lato', sans-serif;
             padding-top: 70px;
+            padding-bottom: 20px;
         }
 
         .post-content {
@@ -53,6 +73,7 @@ $comments = $comment_stmt->get_result();
             background: #f1f1f1;
             padding: 20px;
             border-radius: 10px;
+            margin-bottom: 20px;
         }
 
         .comment {
@@ -65,6 +86,21 @@ $comments = $comment_stmt->get_result();
         .form-group label {
             color: black;
         }
+
+        .back-button {
+            margin-bottom: 20px;
+            display: block;
+            width: 200px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .edit-icon {
+            margin-left: 10px;
+            font-size: 20px;
+            color: #fff;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +110,7 @@ $comments = $comment_stmt->get_result();
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Basculer la navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="../index.php">Bonjour, <?php echo htmlspecialchars($_SESSION['username']); ?>!</a>
+                <a class="navbar-brand" href="../index.php">Bonjour, <?php echo htmlspecialchars($username); ?>!</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
@@ -84,7 +120,7 @@ $comments = $comment_stmt->get_result();
                     <li class="page-scroll">
                         <a href="blog.php">Blog</a>
                     </li>
-                    <?php if ($_SESSION['username'] !== "Invité"): ?>
+                    <?php if ($username !== "Invité"): ?>
                         <li class="page-scroll">
                             <a href="../user/logout.php">Déconnexion</a>
                         </li>
@@ -98,7 +134,14 @@ $comments = $comment_stmt->get_result();
         </div>
     </nav>
     <div class="container">
-        <h1 class="text-center" style="color:white;margin-top:90px;"><?php echo htmlspecialchars($post['title']); ?></h1>
+        <h1 class="text-center" style="color:white;margin-top:90px;margin-bottom:40px;">
+            <?php echo htmlspecialchars($post['title']); ?>
+            <?php if ($is_admin): ?>
+                <a href="../blog/edit_post.php?id=<?php echo $post_id; ?>" class="edit-icon">
+                    <i class="fa fa-edit"></i>
+                </a>
+            <?php endif; ?>
+        </h1>
         <div class="post-content">
             <p><strong>Posté par:</strong> <?php echo htmlspecialchars($post['username']); ?></p>
             <p><strong>Date:</strong> <?php echo (new DateTime($post['created_at']))->format('d/m/Y H:i'); ?></p>
@@ -119,7 +162,7 @@ $comments = $comment_stmt->get_result();
                 <p>Aucun commentaire pour cet article.</p>
             <?php endif; ?>
         </div>
-        <?php if ($_SESSION['username'] !== "Invité"): ?>
+        <?php if ($username !== "Invité"): ?>
             <form id="commentForm" method="POST" action="submit_comment.php">
                 <div class="form-group">
                     <label for="content">Ajouter un commentaire</label>
@@ -131,8 +174,11 @@ $comments = $comment_stmt->get_result();
         <?php else: ?>
             <p>Veuillez vous <a href="../user/login.php">connecter</a> pour ajouter un commentaire.</p>
         <?php endif; ?>
+        <button onclick="window.location.href='blog.php'" style="margin-top:20px;" class="btn btn-secondary back-button">Retour à la liste des articles</button>
     </div>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/freelancer.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.full.min.js"></script>
 </body>
 </html>
