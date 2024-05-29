@@ -95,7 +95,7 @@ $comments = $comment_stmt->get_result();
             margin-right: auto;
         }
 
-        .edit-icon {
+        .edit-icon, .moderate-icon {
             margin-left: 10px;
             font-size: 20px;
             color: #fff;
@@ -140,6 +140,9 @@ $comments = $comment_stmt->get_result();
                 <a href="../blog/edit_post.php?id=<?php echo $post_id; ?>" class="edit-icon">
                     <i class="fa fa-edit"></i>
                 </a>
+                <a href="../admin/admin_approve_comments.php?post_id=<?php echo $post_id; ?>" class="moderate-icon">
+                    <i class="fa fa-comments"></i>
+                </a>
             <?php endif; ?>
         </h1>
         <div class="post-content">
@@ -174,7 +177,7 @@ $comments = $comment_stmt->get_result();
         <?php else: ?>
             <p>Veuillez vous <a href="../user/login.php">connecter</a> pour ajouter un commentaire.</p>
         <?php endif; ?>
-        <button onclick="window.location.href='blog.php'" style="margin-top:20px;" class="btn btn-secondary back-button">Retour à la liste des articles</button>
+        <button onclick="window.location.href='blog.php'" class="btn btn-secondary back-button">Retour à la liste des articles</button>
     </div>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
