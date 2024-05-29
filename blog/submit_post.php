@@ -5,14 +5,15 @@ session_start();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $content = $_POST['content'];
+    $preview = $_POST['preview'];
     $tags = $_POST['tags'];
     $user_id = $_SESSION['user_id'];
 
     $conn->begin_transaction();
 
     try {
-        $stmt = $conn->prepare("INSERT INTO posts (title, content, user_id) VALUES (?, ?, ?)");
-        $stmt->bind_param('ssi', $title, $content, $user_id);
+        $stmt = $conn->prepare("INSERT INTO posts (title, content, preview, user_id) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param('sssi', $title, $content, $preview, $user_id);
 
         if (!$stmt->execute()) {
             throw new Exception($stmt->error);

@@ -6,7 +6,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
 $search = isset($_GET['q']) ? $_GET['q'] : '';
 $query = "
-    SELECT p.id, p.title, p.content, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+    SELECT p.id, p.title, p.preview, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
     FROM posts p
     JOIN users u ON p.user_id = u.id
     LEFT JOIN post_tags pt ON p.id = pt.post_id
@@ -101,9 +101,6 @@ $result = $stmt->get_result();
       text-overflow: ellipsis;
       max-width: 90%;
       display: block;
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      -webkit-line-clamp: 1;
     }
   a {
       color: #3498DB;
@@ -197,10 +194,9 @@ $result = $stmt->get_result();
                                 }
                                 ?>
                             </p>
-
                             <p>
                                 <?php
-                                $contentPreview = htmlspecialchars($post['content']);
+                                $contentPreview = htmlspecialchars($post['preview']);
                                 if (strlen($contentPreview) > 120) {
                                     echo substr($contentPreview, 0, 90) . '...';
                                 } else {

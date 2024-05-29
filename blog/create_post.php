@@ -21,17 +21,17 @@ if ($username === "Invité") {
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-<style>
-    body {
-        background-color: #4682b4;
-        color: #000;
-        font-family: 'Lato', sans-serif;
-        padding-top: 70px;
-    }
+    <style>
+        body {
+            background-color: #4682b4;
+            color: #000;
+            font-family: 'Lato', sans-serif;
+            padding-top: 70px;
+        }
 
-    .form-group label {
-        color: white;
-    }
+        .form-group label {
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -70,6 +70,10 @@ if ($username === "Invité") {
             <div class="form-group">
                 <label for="title">Titre du Post</label>
                 <input type="text" class="form-control" id="title" name="title" placeholder="Titre du Post" required>
+            </div>
+            <div class="form-group">
+                <label for="preview">Aperçu</label>
+                <textarea class="form-control" id="preview" name="preview" rows="2" placeholder="Aperçu" maxlength="120" required></textarea>
             </div>
             <div class="form-group">
                 <label for="content">Contenu</label>
