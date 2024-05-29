@@ -1,10 +1,27 @@
 <?php
 session_start();
+require '../db_connection.php';
+
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
 if ($username === "Invité") {
     // Redirect to login page if the user is not logged in
     header('Location: ../user/login.php');
+    exit;
+}
+
+// Check if the user is an admin
+$user_id = $_SESSION['user_id'];
+$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+$stmt->bind_param('i', $user_id);
+$stmt->execute();
+$stmt->bind_result($is_admin);
+$stmt->fetch();
+$stmt->close();
+
+if (!$is_admin) {
+    // Redirect to access denied page if the user is not an admin
+    header('Location: ../access_denied.php');
     exit;
 }
 ?>
@@ -21,17 +38,17 @@ if ($username === "Invité") {
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
-    <style>
-        body {
-            background-color: #4682b4;
-            color: #000;
-            font-family: 'Lato', sans-serif;
-            padding-top: 70px;
-        }
+<style>
+    body {
+        background-color: #4682b4;
+        color: #000;
+        font-family: 'Lato', sans-serif;
+        padding-top: 70px;
+    }
 
-        .form-group label {
-            color: white;
-        }
+    .form-group label {
+        color: white;
+    }
     </style>
 </head>
 <body>
