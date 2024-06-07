@@ -59,7 +59,7 @@ $posts = $posts_stmt->get_result();
                         <a href="../index.php">À Propos</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="blog.php">Blog</a>
+                        <a href="../blog/blog.php">Blog</a>
                     </li>
                     <?php if ($_SESSION['username'] !== "Invité"): ?>
                         <li class="page-scroll">

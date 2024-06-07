@@ -16,38 +16,6 @@ if (!$is_admin) {
     header('Location: ../access_denied.php');
     exit;
 }
-
-$post_id_filter = isset($_GET['post_id']) ? $_GET['post_id'] : null;
-
-// Approve comment
-if (isset($_POST['approve_comment_id'])) {
-    $comment_id = $_POST['approve_comment_id'];
-    $approve_stmt = $conn->prepare("UPDATE comments SET is_approved = TRUE WHERE id = ?");
-    $approve_stmt->bind_param('i', $comment_id);
-    $approve_stmt->execute();
-    $approve_stmt->close();
-}
-
-// Fetch all unapproved comments
-$query = "SELECT c.id, c.content, c.created_at, u.username, p.title, p.id AS post_id
-          FROM comments c
-          JOIN users u ON c.user_id = u.id
-          JOIN posts p ON c.post_id = p.id
-          WHERE c.is_approved = FALSE";
-
-if ($post_id_filter) {
-    $query .= " AND p.id = ?";
-}
-
-$query .= " ORDER BY c.created_at DESC";
-$comments_stmt = $conn->prepare($query);
-
-if ($post_id_filter) {
-    $comments_stmt->bind_param('i', $post_id_filter);
-}
-
-$comments_stmt->execute();
-$comments = $comments_stmt->get_result();
 ?>
 
 <!DOCTYPE html>
@@ -75,6 +43,17 @@ $comments = $comments_stmt->get_result();
             padding: 10px;
             border-radius: 5px;
             margin-bottom: 10px;
+        }
+
+        .filter-section {
+            background: #f1f1f1;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .filter-label {
+            color: black;
         }
     </style>
 </head>
@@ -110,28 +89,110 @@ $comments = $comments_stmt->get_result();
     </nav>
     <div class="container">
         <h1 class="text-center" style="color:white;margin-top:90px;">Approuver les Commentaires</h1>
-        <?php if ($post_id_filter): ?>
-            <a href="admin_approve_comments.php" class="btn btn-secondary">Voir tous les commentaires</a>
-        <?php endif; ?>
-        <?php if ($comments->num_rows > 0): ?>
-            <?php while ($comment = $comments->fetch_assoc()): ?>
-                <div class="comment">
-                    <p><strong><?php echo htmlspecialchars($comment['username']); ?></strong> sur <em><a href="../blog/post.php?id=<?php echo $comment['post_id']; ?>" target="_blank"><?php echo htmlspecialchars($comment['title']); ?></a></em> le <?php echo (new DateTime($comment['created_at']))->format('d/m/Y H:i'); ?></p>
-                    <p><?php echo nl2br(htmlspecialchars($comment['content'])); ?></p>
-                    <form method="POST" action="admin_approve_comments.php<?php echo $post_id_filter ? '?post_id=' . $post_id_filter : ''; ?>">
-                        <input type="hidden" name="approve_comment_id" value="<?php echo $comment['id']; ?>">
-                        <button type="submit" class="btn btn-success">Approuver</button>
-                    </form>
+        <div class="filter-section">
+            <div class="row">
+                <div class="col-md-4">
+                    <label class="filter-label" for="filter-post">Filtrer par article</label>
+                    <select class="form-control" id="filter-post"></select>
                 </div>
-            <?php endwhile; ?>
-        <?php else: ?>
-            <p>Aucun commentaire à approuver.</p>
-        <?php endif; ?>
+                <div class="col-md-4">
+                    <label class="filter-label" for="filter-user">Filtrer par utilisateur</label>
+                    <select class="form-control" id="filter-user"></select>
+                </div>
+                <div class="col-md-4">
+                    <label class="filter-label" for="filter-date">Filtrer par date</label>
+                    <input type="date" class="form-control" id="filter-date">
+                </div>
+            </div>
+        </div>
+        <div id="comments-container">
+            <p>Chargement des commentaires...</p>
+        </div>
     </div>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/freelancer.min.js"></script>
-    <script src="../vendor/clamp/clamp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.full.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#filter-post').select2({
+                placeholder: 'Sélectionner un article',
+                ajax: {
+                    url: 'fetch_posts.php',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function(post) {
+                                return { id: post.id, text: post.title };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0
+            });
+
+            $('#filter-user').select2({
+                placeholder: 'Sélectionner un utilisateur',
+                ajax: {
+                    url: 'fetch_users.php',
+                    dataType: 'json',
+                    delay: 250,
+                    processResults: function (data) {
+                        return {
+                            results: data.map(function(user) {
+                                return { id: user.id, text: user.username };
+                            })
+                        };
+                    },
+                    cache: true
+                },
+                minimumInputLength: 0
+            });
+
+            function fetchComments() {
+                var post_id = $('#filter-post').val();
+                var user_id = $('#filter-user').val();
+                var date = $('#filter-date').val();
+
+                $.ajax({
+                    url: 'fetch_comments.php',
+                    type: 'GET',
+                    data: {
+                        post_id: post_id,
+                        user_id: user_id,
+                        date: date
+                    },
+                    success: function(data) {
+                        var comments = JSON.parse(data);
+                        var commentsHtml = '';
+
+                        if (comments.length > 0) {
+                            comments.forEach(function(comment) {
+                                commentsHtml += '<div class="comment">' +
+                                    '<p><strong>' + comment.username + '</strong> sur <em><a href="../blog/post.php?id=' + comment.post_id + '" target="_blank">' + comment.title + '</a></em> le ' + new Date(comment.created_at).toLocaleDateString('fr-FR') + '</p>' +
+                                    '<p>' + comment.content.replace(/\n/g, '<br>') + '</p>' +
+                                    '<form method="POST" action="admin_approve_comments.php">' +
+                                    '<input type="hidden" name="approve_comment_id" value="' + comment.id + '">' +
+                                    '<button type="submit" class="btn btn-success">Approuver</button>' +
+                                    '</form>' +
+                                    '</div>';
+                            });
+                        } else {
+                            commentsHtml = '<p>Aucun commentaire à approuver.</p>';
+                        }
+
+                        $('#comments-container').html(commentsHtml);
+                    }
+                });
+            }
+
+            $('#filter-post, #filter-user, #filter-date').on('change', fetchComments);
+
+            // Initial fetch
+            fetchComments();
+        });
+    </script>
 </body>
 </html>
