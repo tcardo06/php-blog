@@ -16,6 +16,16 @@ if (!$is_admin) {
     header('Location: ../access_denied.php');
     exit;
 }
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_comment_id'])) {
+    $comment_id = $_POST['approve_comment_id'];
+    $approve_stmt = $conn->prepare("UPDATE comments SET is_approved = TRUE WHERE id = ?");
+    $approve_stmt->bind_param('i', $comment_id);
+    $approve_stmt->execute();
+    $approve_stmt->close();
+    echo json_encode(['success' => true]);
+    exit;
+}
 ?>
 
 <!DOCTYPE html>
@@ -173,10 +183,7 @@ if (!$is_admin) {
                                 commentsHtml += '<div class="comment">' +
                                     '<p><strong>' + comment.username + '</strong> sur <em><a href="../blog/post.php?id=' + comment.post_id + '" target="_blank">' + comment.title + '</a></em> le ' + new Date(comment.created_at).toLocaleDateString('fr-FR') + '</p>' +
                                     '<p>' + comment.content.replace(/\n/g, '<br>') + '</p>' +
-                                    '<form method="POST" action="admin_approve_comments.php">' +
-                                    '<input type="hidden" name="approve_comment_id" value="' + comment.id + '">' +
-                                    '<button type="submit" class="btn btn-success">Approuver</button>' +
-                                    '</form>' +
+                                    '<button class="btn btn-success approve-comment" data-comment-id="' + comment.id + '">Approuver</button>' +
                                     '</div>';
                             });
                         } else {
@@ -187,6 +194,23 @@ if (!$is_admin) {
                     }
                 });
             }
+
+            $(document).on('click', '.approve-comment', function() {
+                var commentId = $(this).data('comment-id');
+                $.ajax({
+                    url: 'admin_approve_comments.php',
+                    type: 'POST',
+                    data: {
+                        approve_comment_id: commentId
+                    },
+                    success: function(response) {
+                        var result = JSON.parse(response);
+                        if (result.success) {
+                            fetchComments();
+                        }
+                    }
+                });
+            });
 
             $('#filter-post, #filter-user, #filter-date').on('change', fetchComments);
 
