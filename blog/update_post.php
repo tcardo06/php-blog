@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $conn->begin_transaction();
 
     try {
-        $stmt = $conn->prepare("UPDATE posts SET title = ?, content = ?, preview = ? WHERE id = ?");
+        $stmt = $conn->prepare("UPDATE posts SET title = ?, content = ?, preview = ?, updated_at = NOW() WHERE id = ?");
         $stmt->bind_param('sssi', $title, $content, $preview, $post_id);
 
         if (!$stmt->execute()) {

@@ -2,7 +2,7 @@
 require '../db_connection.php';
 
 $query = "
-    SELECT p.id, p.title, p.content, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+    SELECT p.id, p.title, p.content, p.created_at, p.updated_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
     FROM posts p
     JOIN users u ON p.user_id = u.id
     LEFT JOIN post_tags pt ON p.id = pt.post_id
@@ -56,6 +56,11 @@ $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($post = $result->fetch_assoc()) {
+        $is_updated = $post['updated_at'] && $post['updated_at'] !== $post['created_at'];
+        $date = new DateTime($is_updated ? $post['updated_at'] : $post['created_at']);
+        $date_text = $is_updated ? 'Mise à jour par ' : 'Posté par ';
+        $date_text .= htmlspecialchars($post['username']) . ' le ' . $date->format('d/m/Y H:i');
+
         echo '<div class="col-md-4">
                 <div class="card">
                     <div class="card-header">
@@ -64,9 +69,7 @@ if ($result->num_rows > 0) {
                         </a>
                     </div>
                     <div class="card-body">
-                        <p class="text-muted">
-                            Posté par ' . htmlspecialchars($post['username']) . ' le ' . (new DateTime($post['created_at']))->format('d/m/Y H:i') . '
-                        </p>
+                        <p class="text-muted">' . $date_text . '</p>
                         <p class="tags" style="font-size: 1.0em; color: #777;">
                             ' . htmlspecialchars($post['tags']) . '
                         </p>
@@ -80,7 +83,7 @@ if ($result->num_rows > 0) {
     }
 } else {
     echo '<div class="col-12">
-            <p class="text-center">No posts found.</p>
+            <p class="text-center">Aucun article trouvé.</p>
           </div>';
 }
 ?>

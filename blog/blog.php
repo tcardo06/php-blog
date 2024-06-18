@@ -6,7 +6,7 @@ $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
 $search = isset($_GET['q']) ? $_GET['q'] : '';
 $query = "
-    SELECT p.id, p.title, p.preview, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+    SELECT p.id, p.title, p.preview, p.created_at, p.updated_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
     FROM posts p
     JOIN users u ON p.user_id = u.id
     LEFT JOIN post_tags pt ON p.id = pt.post_id
@@ -157,7 +157,7 @@ $result = $stmt->get_result();
         <h1 class="text-center" style="color:white;margin-top:90px;margin-bottom:30px;">Blog Posts</h1>
         <div class="row mb-4" style="margin-bottom:10px;">
             <div class="col-md-4">
-                <input type="text" id="search-title" style="margin-top:-2px;margin-bottom:5px;" class="form-control" placeholder="Search by title">
+                <input type="text" id="search-title" style="margin-top:-2px;margin-bottom:5px;" class="form-control" placeholder="Recherche par titre">
             </div>
             <div class="col-md-4">
                 <select id="search-author" class="form-control"></select>
@@ -177,13 +177,15 @@ $result = $stmt->get_result();
                             </a>
                         </div>
                         <div class="card-body">
-                            <p class="text-muted">
-                                Posté par <?php echo htmlspecialchars($post['username']); ?> le
-                                <?php
-                                $date = new DateTime($post['created_at']);
-                                echo $date->format('d/m/Y H:i');
-                                ?>
-                            </p>
+                          <p class="text-muted">
+                              <?php
+                              $is_updated = $post['updated_at'] && $post['updated_at'] !== $post['created_at'];
+                              $date = new DateTime($is_updated ? $post['updated_at'] : $post['created_at']);
+                              echo $is_updated ? 'Mise à jour par ' : 'Posté par ';
+                              echo htmlspecialchars($post['username']);
+                              echo ' le ' . $date->format('d/m/Y H:i');
+                              ?>
+                          </p>
                             <p class="tags" style="font-size: 1.0em; color: #777;">
                                 <?php
                                 $tags = htmlspecialchars($post['tags']);
@@ -212,7 +214,6 @@ $result = $stmt->get_result();
             <?php else: ?>
                 <div class="col-12">
                     <p class="text-center">No posts found.</p>
-                </div>
             <?php endif; ?>
         </div>
     </div>
@@ -243,7 +244,7 @@ $result = $stmt->get_result();
     $(document).ready(function() {
         // Initialize Select2 for authors
         $('#search-author').select2({
-            placeholder: 'Search by author',
+            placeholder: 'Recherche par auteur',
             ajax: {
                 url: 'search_authors.php',
                 dataType: 'json',
@@ -265,7 +266,7 @@ $result = $stmt->get_result();
 
         // Initialize Select2 for tags
         $('#search-tag').select2({
-            placeholder: 'Search by tags',
+            placeholder: 'Recherche par tags',
             ajax: {
                 url: 'search_tags.php',
                 dataType: 'json',

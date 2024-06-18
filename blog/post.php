@@ -20,7 +20,7 @@ if ($username !== "Invité") {
 }
 
 // Fetch the post
-$stmt = $conn->prepare("SELECT p.title, p.content, p.created_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+$stmt = $conn->prepare("SELECT p.title, p.content, p.created_at, p.updated_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
                         FROM posts p
                         JOIN users u ON p.user_id = u.id
                         LEFT JOIN post_tags pt ON p.id = pt.post_id
@@ -137,7 +137,7 @@ $comments = $comment_stmt->get_result();
         <h1 class="text-center" style="color:white;margin-top:90px;margin-bottom:40px;">
             <?php echo htmlspecialchars($post['title']); ?>
             <?php if ($is_admin): ?>
-                <a href="../blog/edit_post.php?id=<?php echo $post_id; ?>" class="edit-icon">
+                <a href="edit_post.php?id=<?php echo $post_id; ?>" class="edit-icon">
                     <i class="fa fa-edit"></i>
                 </a>
                 <a href="../admin/admin_approve_comments.php?post_id=<?php echo $post_id; ?>" class="moderate-icon">
@@ -146,8 +146,15 @@ $comments = $comment_stmt->get_result();
             <?php endif; ?>
         </h1>
         <div class="post-content">
-            <p><strong>Posté par:</strong> <?php echo htmlspecialchars($post['username']); ?></p>
-            <p><strong>Date:</strong> <?php echo (new DateTime($post['created_at']))->format('d/m/Y H:i'); ?></p>
+            <p>
+                <?php
+                $is_updated = $post['updated_at'] && $post['updated_at'] !== $post['created_at'];
+                $date = new DateTime($is_updated ? $post['updated_at'] : $post['created_at']);
+                echo $is_updated ? '<strong>Mise à jour par:</strong> ' : '<strong>Posté par:</strong> ';
+                echo htmlspecialchars($post['username']);
+                echo ' le ' . $date->format('d/m/Y H:i');
+                ?>
+            </p>
             <p><strong>Tags:</strong> <?php echo htmlspecialchars($post['tags']); ?></p>
             <hr>
             <p><?php echo nl2br(htmlspecialchars($post['content'])); ?></p>
