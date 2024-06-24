@@ -59,7 +59,6 @@ $comments = $comment_stmt->get_result();
             color: #000;
             font-family: 'Lato', sans-serif;
             padding-top: 70px;
-            padding-bottom: 20px;
         }
 
         .post-content {
@@ -186,6 +185,7 @@ $comments = $comment_stmt->get_result();
         <?php endif; ?>
         <button onclick="window.location.href='blog.php'" class="btn btn-secondary back-button">Retour à la liste des articles</button>
     </div>
+    <?php include '../footer.php'; ?>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/freelancer.min.js"></script>

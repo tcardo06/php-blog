@@ -125,7 +125,7 @@ if ($username !== "Invité") {
                 <div class="col-lg-8 col-lg-offset-2">
                     <p style="text-align: center !important;">
                         Ma passion pour l’informatique et les jeux vidéo m’a permis d’intégrer la Coding Factory. J’apprends à coder en plusieurs langages et à travailler avec la méthode Scrum. J’aime travailler en équipe, je suis curieux et organisé.
-                        <br>
+                        <br><br>
                         <a href="pdf/THOMAS_CARDOSO_DEVELOPPEUR_WEB.pdf" download>Téléchargez mon CV ici</a>.
                     </p>
                 </div>
@@ -175,29 +175,7 @@ if ($username !== "Invité") {
             </div>
         </div>
     </section>
-    <footer class="text-center">
-        <div class="footer-below">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-12">
-                        <ul class="list-inline">
-                            <li>
-                                <a href="https://fr.linkedin.com/in/thomas-cardoso" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-linkedin"></i></a>
-                            </li>
-                            <li>
-                                <a href="https://github.com/tcardo06" class="btn-social btn-outline" target="_blank"><i class="fa fa-fw fa-github"></i></a>
-                            </li>
-                            <?php if ($is_admin): ?>
-                                <li>
-                                    <a href="admin/dashboard.php" class="btn-social btn-outline"><i class="fa fa-fw fa-cogs"></i></a>
-                                </li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <?php include 'footer.php'; ?>
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="js/freelancer.min.js"></script>
