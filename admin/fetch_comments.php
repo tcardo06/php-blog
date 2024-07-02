@@ -11,9 +11,22 @@ $stmt->bind_result($is_admin);
 $stmt->fetch();
 $stmt->close();
 
-if (!$is_admin) {
-    http_response_code(403);
-    echo json_encode(['error' => 'Access denied']);
+class AccessDeniedException extends Exception {
+    public function errorMessage() {
+        return "Error: " . $this->getMessage();
+    }
+}
+
+try {
+    if (!$is_admin) {
+        // Throw an exception if the user is not an admin
+        throw new AccessDeniedException('Access Denied: User is not an admin.');
+    }
+} catch (AccessDeniedException $e) {
+    error_log($e->errorMessage());
+
+    // Redirect to access denied page
+    header('Location: ../access_denied.php');
     exit;
 }
 
