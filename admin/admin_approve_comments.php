@@ -1,9 +1,17 @@
 <?php
 require '../db_connection.php';
-session_start();
+require '../SessionManager.php';
+
+SessionManager::startSession();
 
 // Check if the user is an admin
-$user_id = $_SESSION['user_id'];
+$user_id = SessionManager::get('user_id');
+
+if ($user_id === null) {
+    // Handle the case where user_id is not set in the session
+    die('Unauthorized access');
+}
+
 $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
 $stmt->bind_param('i', $user_id);
 $stmt->execute();
