@@ -217,7 +217,6 @@ $result = $stmt->get_result();
             <?php endif; ?>
         </div>
     </div>
-    <?php include '../footer.php'; ?>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/freelancer.min.js"></script>

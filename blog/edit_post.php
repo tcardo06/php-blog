@@ -127,8 +127,6 @@ $tags_stmt->close();
             <button type="submit" class="btn btn-primary">Mettre à jour</button>
         </form>
     </div>
-    <br>
-    <?php include '../footer.php'; ?>
     <script src="../vendor/jquery/jquery.min.js"></script>
     <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="../js/freelancer.min.js"></script>
