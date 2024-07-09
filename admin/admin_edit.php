@@ -1,39 +1,43 @@
 <?php
+// Include the necessary files for error handling
+require_once '../UnauthorizedAccessException.php';
+require_once '../NormalTerminationException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 session_start();
 
-// Check if the user is an admin
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$stmt->bind_result($is_admin);
-$stmt->fetch();
-$stmt->close();
-
-class AccessDeniedException extends Exception {
-    public function errorMessage() {
-        return "Error: " . $this->getMessage();
-    }
-}
-
 try {
-    if (!$is_admin) {
-        // Throw an exception if the user is not an admin
-        throw new AccessDeniedException('Access Denied: User is not an admin.');
+    // Check if the user is an admin
+    $user_id = $_SESSION['user_id'] ?? null;
+
+    if ($user_id === null) {
+        throw new UnauthorizedAccessException('Unauthorized access');
     }
-} catch (AccessDeniedException $e) {
-    error_log($e->errorMessage());
 
-    // Redirect to access denied page
-    header('Location: ../access_denied.php');
-    exit;
+    $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$is_admin) {
+        throw new UnauthorizedAccessException('Access Denied: User is not an admin.');
+    }
+
+    // Fetch all posts
+    $posts_stmt = $conn->prepare("SELECT id, title FROM posts ORDER BY created_at DESC");
+    $posts_stmt->execute();
+    $posts = $posts_stmt->get_result();
+
+} catch (UnauthorizedAccessException $e) {
+    throw $e;
+} catch (NormalTerminationException $e) {
+    throw $e;
+} catch (Exception $e) {
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
-
-// Fetch all posts
-$posts_stmt = $conn->prepare("SELECT id, title FROM posts ORDER BY created_at DESC");
-$posts_stmt->execute();
-$posts = $posts_stmt->get_result();
 ?>
 
 <!DOCTYPE html>
