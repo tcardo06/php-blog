@@ -1,50 +1,48 @@
 <?php
+// Include the necessary files for error handling
+require_once '..//UnauthorizedAccessException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 require '../SessionManager.php';
 
 SessionManager::startSession();
 
-// Check if the user is an admin
-$user_id = SessionManager::get('user_id');
-
-if ($user_id === null) {
-    // Handle the case where user_id is not set in the session
-    die('Unauthorized access');
-}
-
-$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$stmt->bind_result($is_admin);
-$stmt->fetch();
-$stmt->close();
-
-class AccessDeniedException extends Exception {
-    public function errorMessage() {
-        return "Error: " . $this->getMessage();
-    }
-}
-
 try {
+    // Check if the user is an admin
+    $user_id = SessionManager::get('user_id');
+
+    if ($user_id === null) {
+        // Handle the case where user_id is not set in the session
+        throw new UnauthorizedAccessException('Unauthorized access');
+    }
+
+    $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+    $stmt->close();
+
     if (!$is_admin) {
         // Throw an exception if the user is not an admin
-        throw new AccessDeniedException('Access Denied: User is not an admin.');
+        throw new UnauthorizedAccessException('Access Denied: User is not an admin.');
     }
-} catch (AccessDeniedException $e) {
-    error_log($e->errorMessage());
 
-    // Redirect to access denied page
-    header('Location: ../access_denied.php');
-    exit;
-}
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_comment_id'])) {
-    $comment_id = $_POST['approve_comment_id'];
-    $approve_stmt = $conn->prepare("UPDATE comments SET is_approved = TRUE WHERE id = ?");
-    $approve_stmt->bind_param('i', $comment_id);
-    $approve_stmt->execute();
-    $approve_stmt->close();
-    echo json_encode(['success' => true]);
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['approve_comment_id'])) {
+        $comment_id = $_POST['approve_comment_id'];
+        $approve_stmt = $conn->prepare("UPDATE comments SET is_approved = TRUE WHERE id = ?");
+        $approve_stmt->bind_param('i', $comment_id);
+        $approve_stmt->execute();
+        $approve_stmt->close();
+        echo json_encode(['success' => true]);
+        exit;
+    }
+} catch (UnauthorizedAccessException $e) {
+    throw $e;
+} catch (Exception $e) {
+    // Handle other exceptions
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
     exit;
 }
 ?>
