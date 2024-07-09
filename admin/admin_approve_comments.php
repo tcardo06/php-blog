@@ -13,7 +13,6 @@ try {
     $user_id = SessionManager::get('user_id');
 
     if ($user_id === null) {
-        // Handle the case where user_id is not set in the session
         throw new UnauthorizedAccessException('Unauthorized access');
     }
 
@@ -38,16 +37,12 @@ try {
         throw new NormalTerminationException('Success', ['success' => true]);
     }
 } catch (UnauthorizedAccessException $e) {
-    // The error handler will catch this and redirect to access_denied.php
     throw $e;
 } catch (NormalTerminationException $e) {
-    // The error handler will catch this and output the JSON response
     throw $e;
 } catch (Exception $e) {
-    // Handle other exceptions
     error_log('An error occurred: ' . $e->getMessage());
     echo 'An error occurred. Please try again later.';
-    exit;
 }
 ?>
 
