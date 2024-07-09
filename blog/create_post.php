@@ -1,41 +1,43 @@
 <?php
 session_start();
+require_once '../UnauthorizedAccessException.php';
+require_once '../NormalTerminationException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
-if ($username === "Invité") {
-    // Redirect to login page if the user is not logged in
-    header('Location: ../user/login.php');
-    exit;
-}
-
-// Check if the user is an admin
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$stmt->bind_result($is_admin);
-$stmt->fetch();
-$stmt->close();
-
-class AccessDeniedException extends Exception {
-    public function errorMessage() {
-        return "Error: " . $this->getMessage();
-    }
-}
-
 try {
-    if (!$is_admin) {
-        // Throw an exception if the user is not an admin
-        throw new AccessDeniedException('Access Denied: User is not an admin.');
+    if ($username === "Invité") {
+        throw new NormalTerminationException('Redirect', ['url' => '../access_denied.php']);
     }
-} catch (AccessDeniedException $e) {
-    error_log($e->errorMessage());
 
-    // Redirect to access denied page
+    $user_id = $_SESSION['user_id'] ?? null;
+
+    if ($user_id === null) {
+        throw new UnauthorizedAccessException('Unauthorized access');
+    }
+
+    $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$is_admin) {
+        throw new UnauthorizedAccessException('Access Denied: User is not an admin.');
+    }
+
+} catch (UnauthorizedAccessException $e) {
     header('Location: ../access_denied.php');
-    exit;
+    return;
+} catch (NormalTerminationException $e) {
+    header('Location: ' . $e->getData()['url']);
+    return;
+} catch (Exception $e) {
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
 ?>
 

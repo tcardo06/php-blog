@@ -1,61 +1,61 @@
 <?php
+require_once '../UnauthorizedAccessException.php';
+require_once '../NormalTerminationException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 session_start();
 
-// Check if the user is an admin
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$stmt->bind_result($is_admin);
-$stmt->fetch();
-$stmt->close();
-
-class AccessDeniedException extends Exception {
-    public function errorMessage() {
-        return "Error: " . $this->getMessage();
-    }
-}
-
 try {
-    if (!$is_admin) {
-        // Throw an exception if the user is not an admin
-        throw new AccessDeniedException('Access Denied: User is not an admin.');
+    $user_id = $_SESSION['user_id'] ?? null;
+
+    if ($user_id === null) {
+        throw new UnauthorizedAccessException('Unauthorized access');
     }
-} catch (AccessDeniedException $e) {
-    error_log($e->errorMessage());
 
-    // Redirect to access denied page
+    $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+    $stmt->close();
+
+    if (!$is_admin) {
+        throw new UnauthorizedAccessException('Access Denied: User is not an admin.');
+    }
+
+    if (!isset($_GET['id'])) {
+        header('Location: admin_edit.php');
+        return;
+    }
+
+    $post_id = $_GET['id'];
+
+    $stmt = $conn->prepare("SELECT title, content, preview FROM posts WHERE id = ?");
+    $stmt->bind_param('i', $post_id);
+    $stmt->execute();
+    $stmt->bind_result($title, $content, $preview);
+    $stmt->fetch();
+    $stmt->close();
+
+    $tags_stmt = $conn->prepare("SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?");
+    $tags_stmt->bind_param('i', $post_id);
+    $tags_stmt->execute();
+    $tags_result = $tags_stmt->get_result();
+    $tags = [];
+    while ($row = $tags_result->fetch_assoc()) {
+        $tags[] = $row['name'];
+    }
+    $tags_stmt->close();
+
+} catch (UnauthorizedAccessException $e) {
     header('Location: ../access_denied.php');
-    exit;
+    return;
+} catch (NormalTerminationException $e) {
+    throw $e;
+} catch (Exception $e) {
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
-
-if (!isset($_GET['id'])) {
-    // Redirect to the admin edit page if no post ID is provided
-    header('Location: admin_edit.php');
-    exit;
-}
-
-$post_id = $_GET['id'];
-
-// Fetch the post details
-$stmt = $conn->prepare("SELECT title, content, preview FROM posts WHERE id = ?");
-$stmt->bind_param('i', $post_id);
-$stmt->execute();
-$stmt->bind_result($title, $content, $preview);
-$stmt->fetch();
-$stmt->close();
-
-// Fetch the post's tags
-$tags_stmt = $conn->prepare("SELECT t.name FROM tags t JOIN post_tags pt ON t.id = pt.tag_id WHERE pt.post_id = ?");
-$tags_stmt->bind_param('i', $post_id);
-$tags_stmt->execute();
-$tags_result = $tags_stmt->get_result();
-$tags = [];
-while ($row = $tags_result->fetch_assoc()) {
-    $tags[] = $row['name'];
-}
-$tags_stmt->close();
 ?>
 
 <!DOCTYPE html>

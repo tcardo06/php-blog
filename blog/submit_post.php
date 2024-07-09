@@ -1,17 +1,24 @@
 <?php
+require_once '../UnauthorizedAccessException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $preview = $_POST['preview'];
-    $tags = $_POST['tags'];
-    $user_id = $_SESSION['user_id'];
+try {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $user_id = $_SESSION['user_id'] ?? null;
 
-    $conn->begin_transaction();
+        if ($user_id === null) {
+            throw new UnauthorizedAccessException('Unauthorized access');
+        }
 
-    try {
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $preview = $_POST['preview'];
+        $tags = $_POST['tags'];
+
+        $conn->begin_transaction();
+
         $stmt = $conn->prepare("INSERT INTO posts (title, content, preview, user_id) VALUES (?, ?, ?, ?)");
         $stmt->bind_param('sssi', $title, $content, $preview, $user_id);
 
@@ -50,10 +57,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->commit();
 
         header('Location: blog.php');
-        exit;
-    } catch (Exception $e) {
-        $conn->rollback();
-        echo "Error: " . $e->getMessage();
+        return;
     }
+
+} catch (UnauthorizedAccessException $e) {
+    header('Location: ../access_denied.php');
+    return;
+} catch (Exception $e) {
+    $conn->rollback();
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
 ?>

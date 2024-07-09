@@ -1,40 +1,49 @@
 <?php
+require_once '../UnauthorizedAccessException.php';
+require_once '../NormalTerminationException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 
 session_start();
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
-$search = isset($_GET['q']) ? $_GET['q'] : '';
-$query = "
-    SELECT p.id, p.title, p.preview, p.created_at, p.updated_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
-    FROM posts p
-    JOIN users u ON p.user_id = u.id
-    LEFT JOIN post_tags pt ON p.id = pt.post_id
-    LEFT JOIN tags t ON pt.tag_id = t.id
-    WHERE ? = '' OR p.title LIKE ? OR u.username LIKE ? OR t.name LIKE ?
-    GROUP BY p.id
-    ORDER BY p.created_at DESC
-";
+try {
+    $search = isset($_GET['q']) ? $_GET['q'] : '';
+    $query = "
+        SELECT p.id, p.title, p.preview, p.created_at, p.updated_at, u.username, GROUP_CONCAT(t.name SEPARATOR ', ') AS tags
+        FROM posts p
+        JOIN users u ON p.user_id = u.id
+        LEFT JOIN post_tags pt ON p.id = pt.post_id
+        LEFT JOIN tags t ON pt.tag_id = t.id
+        WHERE ? = '' OR p.title LIKE ? OR u.username LIKE ? OR t.name LIKE ?
+        GROUP BY p.id
+        ORDER BY p.created_at DESC
+    ";
 
-$stmt = $conn->prepare($query);
-$searchTerm = '%' . $search . '%';
+    $stmt = $conn->prepare($query);
+    $searchTerm = '%' . $search . '%';
 
-if (!$stmt) {
-    echo "Error preparing statement: " . $conn->error;
-    exit;
+    if (!$stmt) {
+        throw new Exception("Error preparing statement: " . $conn->error);
+    }
+
+    if (!$stmt->bind_param('ssss', $search, $searchTerm, $searchTerm, $searchTerm)) {
+        throw new Exception("Error binding parameters: " . $stmt->error);
+    }
+
+    if (!$stmt->execute()) {
+        throw new Exception("Error executing statement: " . $stmt->error);
+    }
+
+    $result = $stmt->get_result();
+    throw new NormalTerminationException('Success', $result);
+
+} catch (NormalTerminationException $e) {
+    $result = $e->getData();
+} catch (Exception $e) {
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
-
-if (!$stmt->bind_param('ssss', $search, $searchTerm, $searchTerm, $searchTerm)) {
-    echo "Error binding parameters: " . $stmt->error;
-    exit;
-}
-
-if (!$stmt->execute()) {
-    echo "Error executing statement: " . $stmt->error;
-    exit;
-}
-
-$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>

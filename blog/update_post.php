@@ -1,45 +1,36 @@
 <?php
+require_once '../UnauthorizedAccessException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
 session_start();
 
-// Check if the user is an admin
-$user_id = $_SESSION['user_id'];
-$stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
-$stmt->bind_param('i', $user_id);
-$stmt->execute();
-$stmt->bind_result($is_admin);
-$stmt->fetch();
-$stmt->close();
-
-class AccessDeniedException extends Exception {
-    public function errorMessage() {
-        return "Error: " . $this->getMessage();
-    }
-}
-
 try {
-    if (!$is_admin) {
-        // Throw an exception if the user is not an admin
-        throw new AccessDeniedException('Access Denied: User is not an admin.');
+    $user_id = $_SESSION['user_id'] ?? null;
+
+    if ($user_id === null) {
+        throw new UnauthorizedAccessException('Unauthorized access');
     }
-} catch (AccessDeniedException $e) {
-    error_log($e->errorMessage());
 
-    // Redirect to access denied page
-    header('Location: ../access_denied.php');
-    exit;
-}
+    $stmt = $conn->prepare("SELECT is_admin FROM users WHERE id = ?");
+    $stmt->bind_param('i', $user_id);
+    $stmt->execute();
+    $stmt->bind_result($is_admin);
+    $stmt->fetch();
+    $stmt->close();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $post_id = $_POST['post_id'];
-    $title = $_POST['title'];
-    $content = $_POST['content'];
-    $preview = $_POST['preview'];
-    $tags = $_POST['tags'];
+    if (!$is_admin) {
+        throw new UnauthorizedAccessException('Access Denied: User is not an admin.');
+    }
 
-    $conn->begin_transaction();
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $post_id = $_POST['post_id'];
+        $title = $_POST['title'];
+        $content = $_POST['content'];
+        $preview = $_POST['preview'];
+        $tags = $_POST['tags'];
 
-    try {
+        $conn->begin_transaction();
+
         $stmt = $conn->prepare("UPDATE posts SET title = ?, content = ?, preview = ?, updated_at = NOW() WHERE id = ?");
         $stmt->bind_param('sssi', $title, $content, $preview, $post_id);
 
@@ -83,10 +74,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $conn->commit();
 
         header('Location: blog.php');
-        exit;
-    } catch (Exception $e) {
-        $conn->rollback();
-        echo "Error: " . $e->getMessage();
+        return;
     }
+
+} catch (UnauthorizedAccessException $e) {
+    header('Location: ../access_denied.php');
+    return;
+} catch (Exception $e) {
+    $conn->rollback();
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
 ?>
