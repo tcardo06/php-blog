@@ -1,33 +1,44 @@
 <?php
+require_once '../NormalTerminationException.php';
+require_once '../error_handler.php';
 require '../db_connection.php';
-
 session_start();
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $conn->real_escape_string($_POST['username']);
-    $password = $conn->real_escape_string($_POST['password']);
+try {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $username = $conn->real_escape_string($_POST['username']);
+        $password = $conn->real_escape_string($_POST['password']);
 
-    $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    if ($result->num_rows === 1) {
-        $user = $result->fetch_assoc();
-        if (password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
-            $_SESSION['username'] = $username;
-            header("Location: ../index.php");
-            exit;
+        $stmt = $conn->prepare("SELECT id, password FROM users WHERE username = ?");
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        if ($result->num_rows === 1) {
+            $user = $result->fetch_assoc();
+            if (password_verify($password, $user['password'])) {
+                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['username'] = $username;
+                throw new NormalTerminationException('Redirect', ['url' => '../index.php']);
+            } else {
+                $login_error = 'Nom d\'utilisateur ou mot de passe incorrect.';
+            }
         } else {
             $login_error = 'Nom d\'utilisateur ou mot de passe incorrect.';
         }
-    } else {
-        $login_error = 'Nom d\'utilisateur ou mot de passe incorrect.';
-    }
 
-    $stmt->close();
+        $stmt->close();
+    }
+    $conn->close();
+
+} catch (NormalTerminationException $e) {
+    if ($e->getData()['url']) {
+        header('Location: ' . $e->getData()['url']);
+        return;
+    }
+} catch (Exception $e) {
+    error_log('An error occurred: ' . $e->getMessage());
+    echo 'An error occurred. Please try again later.';
 }
-$conn->close();
 ?>
 <!DOCTYPE html>
 <html lang="fr">
