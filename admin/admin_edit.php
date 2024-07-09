@@ -11,6 +11,12 @@ $stmt->bind_result($is_admin);
 $stmt->fetch();
 $stmt->close();
 
+class AccessDeniedException extends Exception {
+    public function errorMessage() {
+        return "Error: " . $this->getMessage();
+    }
+}
+
 try {
     if (!$is_admin) {
         // Throw an exception if the user is not an admin

@@ -26,6 +26,7 @@ if ($username !== "Invité") {
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Cardoso Thomas - Développeur Professionnel</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="css/freelancer.min.css" rel="stylesheet">
     <link href="vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
