@@ -1,6 +1,7 @@
 <?php
 // Include the necessary files for error handling
-require_once '..//UnauthorizedAccessException.php';
+require_once '../UnauthorizedAccessException.php';
+require_once '../NormalTerminationException.php';
 require_once '../error_handler.php';
 require '../db_connection.php';
 require '../SessionManager.php';
@@ -34,10 +35,13 @@ try {
         $approve_stmt->bind_param('i', $comment_id);
         $approve_stmt->execute();
         $approve_stmt->close();
-        echo json_encode(['success' => true]);
-        exit;
+        throw new NormalTerminationException('Success', ['success' => true]);
     }
 } catch (UnauthorizedAccessException $e) {
+    // The error handler will catch this and redirect to access_denied.php
+    throw $e;
+} catch (NormalTerminationException $e) {
+    // The error handler will catch this and output the JSON response
     throw $e;
 } catch (Exception $e) {
     // Handle other exceptions
