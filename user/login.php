@@ -18,7 +18,7 @@ try {
             if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $username;
-                throw new NormalTerminationException('Redirect', ['url' => '../public/index.php']);
+                throw new NormalTerminationException('Redirect', ['url' => '../index.php']);
             } else {
                 $login_error = 'Nom d\'utilisateur ou mot de passe incorrect.';
             }

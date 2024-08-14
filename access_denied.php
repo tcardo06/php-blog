@@ -26,7 +26,7 @@
         let countdown = 5;
         function updateCountdown() {
             if (countdown <= 0) {
-                window.location.href = 'public/index.php';
+                window.location.href = 'index.php';
             } else {
                 document.getElementById('countdown').innerText = countdown;
                 countdown--;

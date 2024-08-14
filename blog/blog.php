@@ -144,7 +144,7 @@ try {
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
-                        <a href="../public/index.php">À Propos</a>
+                        <a href="../index.php">À Propos</a>
                     </li>
                     <li class="page-scroll">
                         <a href="blog.php">Blog</a>

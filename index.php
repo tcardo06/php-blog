@@ -1,6 +1,6 @@
 <?php
 session_start();
-require '../db_connection.php';
+require 'db_connection.php';
 
 $username = isset($_SESSION['username']) ? $_SESSION['username'] : "Invité";
 
@@ -26,10 +26,10 @@ if ($username !== "Invité") {
     <meta name="description" content="">
     <meta name="author" content="">
     <title>Cardoso Thomas - Développeur Professionnel</title>
-    <link rel="icon" href="../favicon.ico" type="image/x-icon">
-    <link href="assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/freelancer.min.css" rel="stylesheet">
-    <link href="assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="icon" href="/favicon.ico" type="image/x-icon">
+    <link href="public/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="public/css/freelancer.min.css" rel="stylesheet">
+    <link href="public/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <style>
@@ -85,15 +85,15 @@ if ($username !== "Invité") {
                         <a href=index.php>À Propos</a>
                     </li>
                     <li class="page-scroll">
-                        <a href="../blog/blog.php">Blog</a>
+                        <a href="blog/blog.php">Blog</a>
                     </li>
                     <?php if ($username !== "Invité"): ?>
                         <li class="page-scroll">
-                            <a href="../user/logout.php">Déconnexion</a>
+                            <a href="user/logout.php">Déconnexion</a>
                         </li>
                     <?php else: ?>
                         <li class="page-scroll">
-                            <a href="../user/login.php">Connexion</a>
+                            <a href="user/login.php">Connexion</a>
                         </li>
                     <?php endif; ?>
                 </ul>
@@ -104,7 +104,7 @@ if ($username !== "Invité") {
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
-                    <img class="img-responsive" src="../img/profile.png" alt="Votre Photo">
+                    <img class="img-responsive" src="img/profile.png" alt="Votre Photo">
                     <div class="intro-text">
                         <span class="name">Cardoso Thomas</span>
                         <hr class="star-light">
@@ -127,7 +127,7 @@ if ($username !== "Invité") {
                     <p style="text-align: center !important;">
                         Ma passion pour l’informatique et les jeux vidéo m’a permis d’intégrer la Coding Factory. J’apprends à coder en plusieurs langages et à travailler avec la méthode Scrum. J’aime travailler en équipe, je suis curieux et organisé.
                         <br>
-                        <a href="../pdf/THOMAS_CARDOSO_DEVELOPPEUR_WEB.pdf" download>Téléchargez mon CV ici</a>.
+                        <a href="pdf/THOMAS_CARDOSO_DEVELOPPEUR_WEB.pdf" download>Téléchargez mon CV ici</a>.
                     </p>
                 </div>
             </div>
@@ -190,7 +190,7 @@ if ($username !== "Invité") {
                             </li>
                             <?php if ($is_admin): ?>
                                 <li>
-                                    <a href="../admin/dashboard.php" class="btn-social btn-outline"><i class="fa fa-fw fa-cogs"></i></a>
+                                    <a href="admin/dashboard.php" class="btn-social btn-outline"><i class="fa fa-fw fa-cogs"></i></a>
                                 </li>
                             <?php endif; ?>
                         </ul>
@@ -199,8 +199,8 @@ if ($username !== "Invité") {
             </div>
         </div>
     </footer>
-    <script src="assets/jquery/jquery.min.js"></script>
-    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="js/freelancer.min.js"></script>
+    <script src="public/assets/jquery/jquery.min.js"></script>
+    <script src="public/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="public/js/freelancer.min.js"></script>
 </body>
 </html>

@@ -6,7 +6,7 @@ session_start();
 try {
     session_unset();
     session_destroy();
-    throw new NormalTerminationException('Redirect', ['url' => '../public/index.php']);
+    throw new NormalTerminationException('Redirect', ['url' => '../index.php']);
 } catch (NormalTerminationException $e) {
     if ($e->getData()['url']) {
         header('Location: ' . $e->getData()['url']);
