@@ -52,9 +52,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blog</title>
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/freelancer.min.css" rel="stylesheet">
-    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../public/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../public/css/freelancer.min.css" rel="stylesheet">
+    <link href="../public/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
@@ -144,7 +144,7 @@ try {
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
-                        <a href="../index.php">À Propos</a>
+                        <a href="../public/index.php">À Propos</a>
                     </li>
                     <li class="page-scroll">
                         <a href="blog.php">Blog</a>
@@ -226,10 +226,10 @@ try {
             <?php endif; ?>
         </div>
     </div>
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../js/freelancer.min.js"></script>
-    <script src="../vendor/clamp/clamp.min.js"></script>
+    <script src="../public/assets/jquery/jquery.min.js"></script>
+    <script src="../public/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../public/js/freelancer.min.js"></script>
+    <script src="../public/assets/clamp/clamp.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.full.min.js"></script>
     <script>
       window.addEventListener('load', function() {

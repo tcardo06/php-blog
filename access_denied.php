@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accès Refusé</title>
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../public/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             background-color: #4682b4;
@@ -26,7 +26,7 @@
         let countdown = 5;
         function updateCountdown() {
             if (countdown <= 0) {
-                window.location.href = 'index.php';
+                window.location.href = 'public/index.php';
             } else {
                 document.getElementById('countdown').innerText = countdown;
                 countdown--;
@@ -40,7 +40,7 @@
         <h1>Accès Refusé</h1>
         <p>Vous n'avez pas la permission d'accéder à cette page.</p>
         <p>Redirection vers la page d'accueil dans <span id="countdown">5</span> secondes.</p>
-        <a href="index.php" class="btn btn-primary" style="color:#abdbe3;">Aller à la Page d'Accueil</a>
+        <a href="public/index.php" class="btn btn-primary" style="color:#abdbe3;">Aller à la Page d'Accueil</a>
     </div>
 </body>
 </html>

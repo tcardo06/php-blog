@@ -39,9 +39,9 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tableau de Bord Admin</title>
-    <link href="../vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/freelancer.min.css" rel="stylesheet">
-    <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link href="../public/assets/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="../public/css/freelancer.min.css" rel="stylesheet">
+    <link href="../public/assets/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic" rel="stylesheet" type="text/css">
     <style>
@@ -84,12 +84,12 @@ try {
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
                     <span class="sr-only">Basculer la navigation</span> Menu <i class="fa fa-bars"></i>
                 </button>
-                <a class="navbar-brand" href="../index.php">Bonjour, <?php echo htmlspecialchars($_SESSION['username']); ?>!</a>
+                <a class="navbar-brand" href="../public/index.php">Bonjour, <?php echo htmlspecialchars($_SESSION['username']); ?>!</a>
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
                 <ul class="nav navbar-nav navbar-right">
                     <li class="page-scroll">
-                        <a href="../index.php">À Propos</a>
+                        <a href="../public/index.php">À Propos</a>
                     </li>
                     <li class="page-scroll">
                         <a href="../blog/blog.php">Blog</a>
@@ -135,8 +135,8 @@ try {
             </div>
         </div>
     </div>
-    <script src="../vendor/jquery/jquery.min.js"></script>
-    <script src="../vendor/bootstrap/js/bootstrap.min.js"></script>
-    <script src="../js/freelancer.min.js"></script>
+    <script src="../public/assets/jquery/jquery.min.js"></script>
+    <script src="../public/assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="..public//js/freelancer.min.js"></script>
 </body>
 </html>

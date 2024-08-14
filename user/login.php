@@ -18,7 +18,7 @@ try {
             if (password_verify($password, $user['password'])) {
                 $_SESSION['user_id'] = $user['id'];
                 $_SESSION['username'] = $username;
-                throw new NormalTerminationException('Redirect', ['url' => '../index.php']);
+                throw new NormalTerminationException('Redirect', ['url' => '../public/index.php']);
             } else {
                 $login_error = 'Nom d\'utilisateur ou mot de passe incorrect.';
             }
@@ -46,7 +46,7 @@ try {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion</title>
-    <link rel="stylesheet" href="../css/freelancer.css">
+    <link rel="stylesheet" href="../public/css/freelancer.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
