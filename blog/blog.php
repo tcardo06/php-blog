@@ -16,7 +16,7 @@ try {
         LEFT JOIN post_tags pt ON p.id = pt.post_id
         LEFT JOIN tags t ON pt.tag_id = t.id
         WHERE ? = '' OR p.title LIKE ? OR u.username LIKE ? OR t.name LIKE ?
-        GROUP BY p.id
+        GROUP BY p.id, p.title, p.preview, p.created_at, p.updated_at, u.username
         ORDER BY p.created_at DESC
     ";
 

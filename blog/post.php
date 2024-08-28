@@ -25,7 +25,8 @@ $stmt = $conn->prepare("SELECT p.title, p.content, p.created_at, p.updated_at, u
                         JOIN users u ON p.user_id = u.id
                         LEFT JOIN post_tags pt ON p.id = pt.post_id
                         LEFT JOIN tags t ON pt.tag_id = t.id
-                        WHERE p.id = ?");
+                        WHERE p.id = ?
+                        GROUP BY p.id, p.title, p.content, p.created_at, p.updated_at, u.username");
 $stmt->bind_param('i', $post_id);
 $stmt->execute();
 $post = $stmt->get_result()->fetch_assoc();

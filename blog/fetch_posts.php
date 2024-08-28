@@ -44,7 +44,7 @@ try {
         $types .= 's';
     }
 
-    $query .= " GROUP BY p.id ORDER BY p.created_at DESC";
+    $query .= " GROUP BY p.id, p.title, p.content, p.created_at, p.updated_at, u.username ORDER BY p.created_at DESC";
 
     $stmt = $conn->prepare($query);
 
