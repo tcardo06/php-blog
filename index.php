@@ -68,17 +68,6 @@ if ($username !== "Invité") {
             margin-left: auto;
             margin-right: auto;
         }
-
-        /* Additional styles to force modal visibility */
-        #successModal {
-            z-index: 1050;
-            display: block;
-            opacity: 1;
-            position: relative;
-        }
-        .modal-backdrop {
-            z-index: 1040;
-        }
     </style>
 </head>
 <body id="page-top" class="index">
@@ -241,6 +230,8 @@ if ($username !== "Invité") {
         // Check if success flag is set in the URL
         if (window.location.search.indexOf('success=1') !== -1) {
             console.log("Success flag detected"); // Debugging line
+            // Optionally scroll to top
+            $('html, body').animate({ scrollTop: 0 }, 'fast');
             $('#successModal').modal('show');
         } else {
             console.log("Success flag not detected"); // Debugging line
