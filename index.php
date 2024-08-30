@@ -143,7 +143,7 @@ if ($username !== "Invité") {
             </div>
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
-                    <form name="sentMessage" id="contactForm" style="color: white;" novalidate>
+                    <form name="sentMessage" id="contactForm" action="contact_me.php" method="POST" style="color: white;" novalidate>
                         <div class="row control-group">
                             <div class="form-group col-xs-12 floating-label-form-group controls">
                                 <label>Nom</label>
