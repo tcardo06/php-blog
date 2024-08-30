@@ -53,8 +53,8 @@ try {
     // Send email
     $mail->send();
 
-    // Redirect to index.php with success flag
-    header("Location: /index.php?success=1");
+    // Redirect to success.php after sending the email
+    header("Location: success.php");
     exit();
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
