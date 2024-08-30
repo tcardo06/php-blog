@@ -27,16 +27,16 @@ $mail = new PHPMailer(true);
 try {
     // Server settings
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';             // Set the SMTP server to send through
+    $mail->Host = 'smtp.gmail.com';              // Set the SMTP server to send through
     $mail->SMTPAuth = true;
-    $mail->Username = 'tcardo0606@gmail.com';   // Your Gmail address
-    $mail->Password = 'vieo mqez ejyn xqyw';      // Your Gmail app password
+    $mail->Username = getenv('GMAIL_USERNAME');  // Use environment variable
+    $mail->Password = getenv('GMAIL_PASSWORD');  // Use environment variable
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
     // Recipients
     $mail->setFrom('noreply@yourdomain.com', 'Mailer'); // Sender's email address and name
-    $mail->addAddress('tcardo0606@gmail.com', 'Tom'); // Add a recipient
+    $mail->addAddress(getenv('GMAIL_USERNAME'), 'Tom'); // Use environment variable for receiving emails
 
     // Content
     $mail->isHTML(true);                                  
