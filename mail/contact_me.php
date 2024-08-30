@@ -1,8 +1,8 @@
 <?php
 // Include PHPMailer library files
-require 'mail/phpmailer/src/PHPMailer.php';
-require 'mail/phpmailer/src/SMTP.php';
-require 'mail/phpmailer/src/Exception.php';
+require __DIR__ . '/phpmailer/src/PHPMailer.php';
+require __DIR__ . '/phpmailer/src/SMTP.php';
+require __DIR__ . '/phpmailer/src/Exception.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -36,7 +36,7 @@ try {
 
     // Recipients
     $mail->setFrom('noreply@yourdomain.com', 'Mailer'); // Sender's email address and name
-    $mail->addAddress('tcardo0606@gmail.com', 'Thomas'); // Add a recipient
+    $mail->addAddress('tcardo0606@gmail.com', 'Tom'); // Add a recipient
 
     // Content
     $mail->isHTML(true);                                  
