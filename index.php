@@ -68,6 +68,17 @@ if ($username !== "Invité") {
             margin-left: auto;
             margin-right: auto;
         }
+
+        /* Additional styles to force modal visibility */
+        #successModal {
+            z-index: 1050;
+            display: block;
+            opacity: 1;
+            position: relative;
+        }
+        .modal-backdrop {
+            z-index: 1040;
+        }
     </style>
 </head>
 <body id="page-top" class="index">
@@ -221,24 +232,20 @@ if ($username !== "Invité") {
         </div>
     </footer>
 
-    <script src="public/assets/jquery/jquery.min.js"></script>
-    <script src="public/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="public/js/freelancer.min.js"></script>
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 
-	<script>
-	$(document).ready(function() {
-		console.log("Document ready"); // Debugging line
-		// Check if success flag is set in the URL
-		if (window.location.search.indexOf('success=1') !== -1) {
-			console.log("Success flag detected"); // Debugging line
-			$('#successModal').modal('show');
-		} else {
-			console.log("Success flag not detected"); // Debugging line
-		}
-	});
-	</script>
-
+    <script>
+    $(document).ready(function() {
+        console.log("Document ready"); // Debugging line
+        // Check if success flag is set in the URL
+        if (window.location.search.indexOf('success=1') !== -1) {
+            console.log("Success flag detected"); // Debugging line
+            $('#successModal').modal('show');
+        } else {
+            console.log("Success flag not detected"); // Debugging line
+        }
+    });
+    </script>
 </body>
 </html>
