@@ -143,39 +143,60 @@ if ($username !== "Invité") {
             </div>
             <div class="row">
                 <div class="col-lg-8 col-lg-offset-2">
-					<form name="sentMessage" id="contactForm" action="mail/contact_me.php" method="POST" style="color: white;" novalidate>
-						<div class="row control-group">
-							<div class="form-group col-xs-12 floating-label-form-group controls">
-								<label>Nom</label>
-								<input type="text" class="form-control" placeholder="Nom" name="name" id="name" required data-validation-required-message="Veuillez entrer votre nom.">
-								<p class="help-block text-danger"></p>
-							</div>
-						</div>
-						<div class="row control-group">
-							<div class="form-group col-xs-12 floating-label-form-group controls">
-								<label>Adresse Email</label>
-								<input type="email" class="form-control" placeholder="Adresse Email" name="email" id="email" required data-validation-required-message="Veuillez entrer votre adresse email.">
-								<p class="help-block text-danger"></p>
-							</div>
-						</div>
-						<div class="row control-group">
-							<div class="form-group col-xs-12 floating-label-form-group controls">
-								<label>Message</label>
-								<textarea rows="5" class="form-control" placeholder="Message" name="message" id="message" required data-validation-required-message="Veuillez entrer un message."></textarea>
-								<p class="help-block text-danger"></p>
-							</div>
-						</div>
-						<div id="success"></div>
-						<div class="row">
-							<div class="form-group col-xs-12">
-								<button type="submit" class="btn btn-primary btn-lg">Envoyer</button>
-							</div>
-						</div>
-					</form>
+                    <form name="sentMessage" id="contactForm" action="mail/contact_me.php" method="POST" style="color: white;" novalidate>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Nom</label>
+                                <input type="text" class="form-control" placeholder="Nom" name="name" id="name" required data-validation-required-message="Veuillez entrer votre nom.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Adresse Email</label>
+                                <input type="email" class="form-control" placeholder="Adresse Email" name="email" id="email" required data-validation-required-message="Veuillez entrer votre adresse email.">
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div class="row control-group">
+                            <div class="form-group col-xs-12 floating-label-form-group controls">
+                                <label>Message</label>
+                                <textarea rows="5" class="form-control" placeholder="Message" name="message" id="message" required data-validation-required-message="Veuillez entrer un message."></textarea>
+                                <p class="help-block text-danger"></p>
+                            </div>
+                        </div>
+                        <div id="success"></div>
+                        <div class="row">
+                            <div class="form-group col-xs-12">
+                                <button type="submit" class="btn btn-primary btn-lg">Envoyer</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </section>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="successModalLabel">Succès</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    Votre message a été envoyé avec succès. Merci de m'avoir contacté !
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <footer class="text-center">
         <div class="footer-below">
             <div class="container">
@@ -199,8 +220,20 @@ if ($username !== "Invité") {
             </div>
         </div>
     </footer>
+
     <script src="public/assets/jquery/jquery.min.js"></script>
     <script src="public/assets/bootstrap/js/bootstrap.min.js"></script>
     <script src="public/js/freelancer.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+    $(document).ready(function() {
+        // Check if success flag is set in the URL
+        if (window.location.search.indexOf('success=1') !== -1) {
+            $('#successModal').modal('show');
+        }
+    });
+    </script>
 </body>
 </html>

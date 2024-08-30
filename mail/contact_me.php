@@ -27,16 +27,16 @@ $mail = new PHPMailer(true);
 try {
     // Server settings
     $mail->isSMTP();
-    $mail->Host = 'smtp.gmail.com';              // Set the SMTP server to send through
+    $mail->Host = 'smtp.gmail.com';              
     $mail->SMTPAuth = true;
-    $mail->Username = getenv('GMAIL_USERNAME');  // Use environment variable
-    $mail->Password = getenv('GMAIL_PASSWORD');  // Use environment variable
+    $mail->Username = getenv('GMAIL_USERNAME');  
+    $mail->Password = getenv('GMAIL_PASSWORD');  
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = 587;
 
     // Recipients
-    $mail->setFrom('noreply@yourdomain.com', 'Mailer'); // Sender's email address and name
-    $mail->addAddress(getenv('GMAIL_USERNAME'), 'Tom'); // Use environment variable for receiving emails
+    $mail->setFrom('noreply@yourdomain.com', 'Mailer');
+    $mail->addAddress(getenv('GMAIL_USERNAME'), 'Tom');
 
     // Content
     $mail->isHTML(true);                                  
@@ -52,8 +52,10 @@ try {
 
     // Send email
     $mail->send();
-    echo 'Message has been sent';
-    return true;
+
+    // Redirect to index.php with success flag
+    header("Location: /index.php?success=1");
+    exit();
 } catch (Exception $e) {
     echo "Message could not be sent. Mailer Error: {$mail->ErrorInfo}";
     return false;
