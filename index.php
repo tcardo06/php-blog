@@ -68,6 +68,14 @@ if ($username !== "Invité") {
             margin-left: auto;
             margin-right: auto;
         }
+        
+        /* Ensure modal appears on top */
+        .modal {
+            z-index: 1050;
+        }
+        .modal-backdrop {
+            z-index: 1040;
+        }
     </style>
 </head>
 <body id="page-top" class="index">
@@ -179,7 +187,7 @@ if ($username !== "Invité") {
 
     <!-- Success Modal -->
     <div id="successModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
+        <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="successModalLabel">Succès</h5>
@@ -226,15 +234,9 @@ if ($username !== "Invité") {
 
     <script>
     $(document).ready(function() {
-        console.log("Document ready"); // Debugging line
         // Check if success flag is set in the URL
         if (window.location.search.indexOf('success=1') !== -1) {
-            console.log("Success flag detected"); // Debugging line
-            // Optionally scroll to top
-            $('html, body').animate({ scrollTop: 0 }, 'fast');
             $('#successModal').modal('show');
-        } else {
-            console.log("Success flag not detected"); // Debugging line
         }
     });
     </script>
