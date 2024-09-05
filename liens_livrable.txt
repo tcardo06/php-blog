@@ -1,0 +1,5 @@
+Lien vers le repository Github du projet:
+https://github.com/tcardo06/php-blog/
+
+Lien vers la dernière analyse SymfonyInsight (médaille d'argent):
+https://insight.symfony.com/projects/0b3cba86-573c-4eb8-b7d7-d0bf21fd4398/analyses/56
