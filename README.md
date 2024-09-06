@@ -2,7 +2,7 @@
 
 ## Résumé
 
-Ce projet est un blog simple en PHP utilisant MySQL comme base de données. Ce README vous guidera à travers deux méthodes de déploiement :
+Ce projet est un blog en PHP utilisant MySQL comme base de données. Ce README vous guidera à travers deux méthodes de déploiement :
 
 1. Installation locale avec XAMPP
 2. Déploiement sur Heroku
