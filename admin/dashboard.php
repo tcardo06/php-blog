@@ -133,10 +133,16 @@ try {
                     <span>Créer un Article</span>
                 </a>
             </div>
+            <div class="col-md-4 admin-option">
+              <a href="../admin/admin_remove.php">
+                  <i class="fa fa-trash fa-2x"></i>
+                  <span>Supprimer un Article</span>
+              </a>
+          </div>
         </div>
     </div>
     <script src="../public/assets/jquery/jquery.min.js"></script>
     <script src="../public/assets/bootstrap/js/bootstrap.min.js"></script>
-    <script src="..public//js/freelancer.min.js"></script>
+    <script src="../public/js/freelancer.min.js"></script>
 </body>
 </html>
