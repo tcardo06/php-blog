@@ -32,12 +32,21 @@ try {
     // Handle delete action via AJAX
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['post_id'])) {
         $post_id = $_POST['post_id'];
-        $delete_stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
-        $delete_stmt->bind_param('i', $post_id);
-        $delete_stmt->execute();
-        $delete_stmt->close();
-        echo json_encode(['success' => true]);  // Return success as JSON response for AJAX
-        exit();
+
+        try {
+            $delete_stmt = $conn->prepare("DELETE FROM posts WHERE id = ?");
+            $delete_stmt->bind_param('i', $post_id);
+            $delete_stmt->execute();
+            $delete_stmt->close();
+
+            echo json_encode(['success' => true]);
+        } catch (Exception $e) {
+            // Log the error and return a proper response
+            error_log('Error deleting post: ' . $e->getMessage());
+            echo json_encode(['success' => false, 'error' => 'Unable to delete post']);
+        }
+
+        return;
     }
 
 } catch (UnauthorizedAccessException $e) {
@@ -47,7 +56,7 @@ try {
 } catch (Exception $e) {
     error_log('An error occurred: ' . $e->getMessage());
     echo json_encode(['success' => false, 'error' => 'An error occurred.']);
-    exit();
+    return;
 }
 ?>
 
@@ -170,7 +179,6 @@ try {
                         success: function(response) {
                             var result = JSON.parse(response);
                             if (result.success) {
-                                // Remove the post from the list
                                 postElementToDelete.remove();
                                 $('#deleteModal').modal('hide');
                             } else {
